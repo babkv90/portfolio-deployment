@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abinash Kumar - Digital Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            /* Dark Theme Defaults */
+            --bg-body: #0f172a;
+            --text-color: #e2e8f0;
+            --bg-header-start: #1e293b;
+            --bg-header-end: #0f172a;
+            --section-heading-color: #6366f1; /* Indigo */
+            --section-heading-underline: #a78bfa; /* Violet */
+            --bg-card: #1e293b;
+            --btn-primary-bg: #6366f1;
+            --btn-primary-hover-bg: #4f46e5;
+            --project-link-color: #a78bfa;
+            --project-link-hover-color: #c4b5fd;
+            --hero-text-color: #a78bfa; /* Hero text color */
+        }
+
+        .light-theme {
+            /* Light Theme Overrides (Maroon & Cream) */
+            --bg-body: #f5f5dc; /* Cream */
+            --text-color: #4a2d2d; /* Darker maroon/brown for text */
+            --bg-header-start: #a52a2a; /* Maroon */
+            --bg-header-end: #800000; /* Darker Maroon */
+            --section-heading-color: #800000; /* Maroon */
+            --section-heading-underline: #a52a2a; /* Lighter Maroon */
+            --bg-card: #ffffff; /* White for cards in light mode */
+            --btn-primary-bg: #800000; /* Maroon */
+            --btn-primary-hover-bg: #a52a2a; /* Lighter Maroon */
+            --project-link-color: #a52a2a; /* Lighter Maroon */
+            --project-link-hover-color: #800000; /* Darker Maroon */
+            --hero-text-color: #800000; /* Maroon for hero subtitle */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .section-heading {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--section-heading-color);
+            transition: color 0.3s ease;
+        }
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 60%;
+            height: 4px;
+            background-color: var(--section-heading-underline);
+            border-radius: 9999px;
+            transition: background-color 0.3s ease;
+        }
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.08);
+        }
+        .btn-primary {
+            background-color: var(--btn-primary-bg);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: var(--btn-primary-hover-bg);
+            transform: translateY(-2px);
+        }
+        .animate-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animate-fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .project-link {
+            color: var(--project-link-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease-in-out;
+        }
+        .project-link:hover {
+            color: var(--project-link-hover-color);
+            text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--bg-card);
+            margin: auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+            position: relative;
+            animation: fadeInScale 0.3s ease-out;
+            color: var(--text-color); /* Ensure modal content text changes with theme */
+        }
+        .close-button {
+            color: var(--text-color);
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--section-heading-underline);
+            text-decoration: none;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--btn-primary-bg);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Header specific styling for theme transition */
+        header {
+            background-image: linear-gradient(to right, var(--bg-header-start), var(--bg-header-end));
+            transition: background-image 0.3s ease;
+        }
+        header nav a {
+            color: var(--text-color); /* Ensure nav links change color */
+        }
+        header nav a:hover {
+            color: var(--section-heading-underline); /* Hover color */
+        }
+        .hero-title {
+            color: white; /* Hero title always white for contrast */
+        }
+        .hero-subtitle {
+            color: var(--hero-text-color); /* Hero subtitle changes with theme */
+            transition: color 0.3s ease;
+        }
+
+        /* Developer Image */
+        .developer-image {
+            width: 180px; /* Increased size */
+            height: 180px; /* Increased size */
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--section-heading-underline); /* Border color based on theme */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Mobile Menu Specific Styles */
+        .mobile-menu {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            width: 100%;
+            background-color: var(--bg-header-start); /* Match header background */
+            position: absolute;
+            top: 100%; /* Position below the header */
+            left: 0;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease-out;
+            transform: translateY(-100%); /* Start off-screen */
+        }
+
+        .mobile-menu.active {
+            display: flex;
+            transform: translateY(0); /* Slide in */
+        }
+
+        .mobile-menu li {
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .mobile-menu li:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="antialiased leading-relaxed">
+
+    <!-- Header and Navigation -->
+    <header class="shadow-lg py-6 sticky top-0 z-50">
+        <nav class="container mx-auto px-6 flex justify-between items-center relative">
+            <a href="#" class="text-3xl font-bold tracking-wider">Abinash Kumar</a>
+
+            <!-- Hamburger menu button for small screens -->
+            <div class="flex items-center sm:hidden">
+                <button id="mobileMenuToggle" class="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <!-- Theme Toggle Button for small screens (moved inside mobile controls) -->
+                <button id="themeToggleMobile" class="p-2 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 ml-2">
+                    <svg id="moonIconMobile" class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="sunIconMobile" class="w-6 h-6 text-yellow-500 hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 4a1 1 0 011 1v1a1 1 0 11-2 0V7a1 1 0 011-1zm-4 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4-4a1 1 0 011 1h1a1 1 0 110 2H3a1 1 0 01-1-1zm0-4a1 1 0 011 1h1a1 1 0 110 2H3a1 1 0 01-1-1zm8-7a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm4-8a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+
+
+            <!-- Desktop Navigation -->
+            <ul class="hidden sm:flex space-x-8 items-center">
+                <li><a href="#about" class="hover:opacity-75 transition duration-300 text-lg">About</a></li>
+                <li><a href="#expertise" class="hover:opacity-75 transition duration-300 text-lg">Expertise</a></li>
+                <li><a href="#skills" class="hover:opacity-75 transition duration-300 text-lg">Skills</a></li>
+                <li><a href="#experience" class="hover:opacity-75 transition duration-300 text-lg">Experience</a></li>
+                <li><a href="#projects" class="hover:opacity-75 transition duration-300 text-lg">Projects</a></li>
+                <li><a href="#contact" class="hover:opacity-75 transition duration-300 text-lg">Contact</a></li>
+                <li>
+                    <!-- Theme Toggle Button for desktop screens -->
+                    <button id="themeToggleDesktop" class="p-2 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                        <svg id="moonIconDesktop" class="w-6 h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                        <svg id="sunIconDesktop" class="w-6 h-6 text-yellow-500 hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 4a1 1 0 011 1v1a1 1 0 11-2 0V7a1 1 0 011-1zm-4 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4-4a1 1 0 011 1h1a1 1 0 110 2H3a1 1 0 01-1-1zm0-4a1 1 0 011 1h1a1 1 0 110 2H3a1 1 0 01-1-1zm8-7a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm4-8a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1zm0 4a1 1 0 011 1h1a1 1 0 110 2h-1a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu (hidden by default) -->
+        <ul id="mobileMenu" class="mobile-menu">
+            <li><a href="#about" class="block py-2 px-4 text-lg hover:bg-gray-700 transition duration-300">About</a></li>
+            <li><a href="#expertise" class="block py-2 px-4 text-lg hover:bg-gray-700 transition duration-300">Expertise</a></li>
+            <li><a href="#skills" class="block py-2 px-4 text-lg hover:bg-gray-700 transition duration-300">Skills</a></li>
+            <li><a href="#experience" class="block py-2 px-4 text-lg hover:bg-gray-700 transition duration-300">Experience</a></li>
+            <li><a href="#projects" class="block py-2 px-4 text-lg hover:bg-gray-700 transition duration-300">Projects</a></li>
+            <li><a href="#contact" class="block py-2 px-4 text-lg hover:bg-gray-700 transition duration-300">Contact</a></li>
+        </ul>
+    </header>
+
+    <!-- Hero Section -->
+     <!-- style="background-image: url('https://placehold.co/1920x1080/1a202c/e2e8f0?text=Modern+Tech+Background');" -->
+    <section id="heroSection" class="relative h-screen flex items-center justify-center bg-cover bg-center" >
+        <div class="absolute inset-0 bg-black opacity-70"></div>
+        <div class="z-10 text-center px-6 animate-fade-in flex flex-col items-center">
+            <!-- Developer Image -->
+            <img src="https://placehold.co/180x180/6366f1/ffffff/png?text=AK" alt="Abinash Kumar Profile" class="developer-image">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold hero-title mb-4 leading-tight">ABINASH KUMAR</h1>
+            <p class="text-xl sm:text-2xl md:text-3xl hero-subtitle font-medium mb-8">Lead Consultant - End-to-End Application Development</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#projects" class="btn-primary text-base sm:text-xl inline-block px-6 sm:px-10 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl">View My Work</a>
+                <a href="ABINASH KUMAR_Resume.pdf" download="ABINASH_KUMAR_Resume.pdf" class="btn-primary text-base sm:text-xl inline-block px-6 sm:px-10 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl bg-transparent border-2 border-white hover:border-indigo-400 hover:bg-indigo-400">
+                    Download Resume
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6 max-w-4xl animate-fade-in">
+            <h2 class="section-heading">About Me</h2>
+            <p class="text-base sm:text-lg leading-relaxed mb-4">
+                Dynamic and results-driven Lead Consultant with a proven track record of spearheading end-to-end application development projects
+                leveraging cutting-edge technologies. Adept at architecting and delivering innovative solutions tailored to meet the diverse needs of clients,
+                with expertise in Angular, Node.js, MongoDB, and other modern frameworks.
+            </p>
+            <p class="text-base sm:text-lg leading-relaxed mb-4">
+                Committed to delivering high-quality, scalable applications that exceed client expectations and drive business growth. Thrives in fast-paced
+                environments, adept at driving collaboration across cross-functional teams, and fostering a culture of innovation and excellence. Ready to bring
+                unparalleled expertise and vision to drive transformative change in application development initiatives.
+            </p>
+            <p class="text-base sm:text-lg leading-relaxed">
+                <span class="font-semibold text-indigo-300">Contact:</span> abiece@outlook.com | <a href="https://www.linkedin.com/in/abiece32/" target="_blank" class="project-link">LinkedIn Profile</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- Areas of Expertise Section -->
+    <section id="expertise" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-6 animate-fade-in">
+            <h2 class="section-heading">Areas of Expertise</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">End-to-End Application Development</h3>
+                    <p class="text-sm sm:text-base text-gray-300">
+                        Proficient in leading the entire lifecycle of application development projects, from conceptualization
+                        and design to implementation, testing, deployment, and maintenance.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Advanced Technologies</h3>
+                    <p class="text-sm sm:text-base text-gray-300">
+                        Skilled in leveraging cutting-edge technologies such as AWS, Angular, Node.js, and other modern frameworks and
+                        platforms to develop scalable, high-performance applications.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Architecture and Design</h3>
+                    <p class="text-sm sm:text-base text-gray-300">
+                        Experienced in designing robust and scalable architectures for complex applications, with a focus on modularity,
+                        flexibility, and maintainability.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Technical Communication</h3>
+                    <p class="text-sm sm:text-base text-gray-300">
+                        Strong communication skills with a proven track record of collaborating with cross-functional teams in the
+                        successful delivery of application development projects, ensuring alignment with business objectives and technical standards.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Agile Methodologies</h3>
+                    <p class="text-sm sm:text-base text-gray-300">
+                        Skilled in Agile development methodologies, with the ability to adapt & thrive in dynamic, fast-paced environments.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Problem Solving & Troubleshooting</h3>
+                    <p class="text-sm sm:text-base text-gray-300">
+                        Strong analytical and problem-solving skills with the ability to identify and resolve complex
+                        technical issues and challenges throughout the development process.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Skills Section -->
+    <section id="skills" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6 animate-fade-in">
+            <h2 class="section-heading">Technical Skills</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Languages</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Typescript</li>
+                        <li>JavaScript</li>
+                        <li>Python</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Frameworks</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Angular</li>
+                        <li>Ionic 3</li>
+                        <li>Node.js</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Databases</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>MongoDB</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Methodologies</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Agile</li>
+                        <li>Waterfall</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-3">Others</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>HTML5</li>
+                        <li>CSS</li>
+                        <li>JSON</li>
+                        <li>Google Maps API</li>
+                        <li>Git</li>
+                        <li>Jira</li>
+                        <li>CloudForge</li>
+                        <li>Cloud Formation</li>
+                        <li>YML</li>
+                        <li>Pandas</li>
+                        <li>Amazon Web Services (AWS)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Executive Career History & Highlights Section -->
+    <section id="experience" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-6 max-w-4xl animate-fade-in">
+            <h2 class="section-heading">Executive Career History & Highlights</h2>
+            <div class="space-y-8">
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Lead Consultant - Genpact, Gurugram</h3>
+                    <p class="text-gray-400 mb-4 text-sm sm:text-base">Since Sep'22</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Lead the design, development, and implementation of 12 applications, leveraging advanced technologies such as AWS, Angular, and Node.js to deliver innovative solutions for Liberty Mutual's support operations.</li>
+                        <li>Implementing best practices in application development, ensuring adherence to coding standards, architectural principles, and industry-leading methodologies.</li>
+                        <li>Provide technical expertise in application architecture and design, guiding the team in the development of scalable, high-performance solutions that meet Liberty Mutual's requirements.</li>
+                        <li>Collaborate with cross-functional teams to define technical requirements, resolve complex technical challenges, and drive the successful delivery of application features and functionalities.</li>
+                        <li>Conduct code reviews and performance optimizations to maintain code quality, reliability, and scalability across all applications.</li>
+                        <li>Implement robust testing strategies in unit testing to ensure the stability and reliability of the applications.</li>
+                        <li>Stay updated on emerging trends and advancements in application development, proactively integrating new technologies and methodologies to enhance the capabilities and performance of the applications.</li>
+                        <li>Actively participate in the mentoring of junior team members and fostering a culture of learning & innovation within the development team.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Software Engineer - Religare Broking Ltd., Noida</h3>
+                    <p class="text-gray-400 mb-4 text-sm sm:text-base">Aug'21 - Sep'22</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Contributed to the development of web applications for stock market operations.</li>
+                        <li>Gained experience with Angular 4 and real-time data feeds using web-sockets.</li>
+                    </ul>
+                </div>
+                 <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Consultant - Adnate IT Solutions LLP, Pune</h3>
+                    <p class="text-gray-400 mb-4 text-sm sm:text-base">Sep'20 - Aug'21</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Engaged in various consulting activities related to IT solutions.</li>
+                    </ul>
+                </div>
+                 <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Software Engineer - Adnate IOT Pvt. Ltd., Pune</h3>
+                    <p class="text-gray-400 mb-4 text-sm sm:text-base">Feb'19 - Sep'20</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Involved in software development, likely related to IoT projects given the company name.</li>
+                    </ul>
+                </div>
+                 <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Associate Consultant - Proc Factory Pvt. Ltd., Pune</h3>
+                    <p class="text-gray-400 mb-4 text-sm sm:text-base">Aug'17 - Jan'19</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 text-sm sm:text-base">
+                        <li>Early career experience as an Associate Consultant.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Undertaken Section -->
+    <section id="projects" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6 animate-fade-in">
+            <h2 class="section-heading">Projects Undertaken</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">In-house applications (Client: Liberty Mutual)</h3>
+                    <p class="text-gray-400 mb-3 text-sm sm:text-base">Duration: Sep'22 to till date</p>
+                    <p class="text-gray-300 mb-4 project-description text-sm sm:text-base">
+                        This extensive project encompasses 12 applications leveraging cutting-edge technologies such as AWS, Angular, Node.js, and more. Its
+                        primary objective is to streamline support operations for Liberty Mutual client organization. Specifically, the project emphasizes the end-to-end
+                        management of various insurance processes. This includes meticulous analysis of documentation requirements for each insurance category, ensuring
+                        comprehensive coverage throughout the insurance lifecycle.
+                    </p>
+                    <h4 class="text-lg sm:text-xl font-medium text-indigo-300 mb-2">Responsibilities:</h4>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm sm:text-base">
+                        <li>Overseeing the complete development cycle of applications, encompassing front-end and back-end development, unit testing, deployment, production, and post-implementation support.</li>
+                        <li>Analyzing evolving trends in alignment with client needs and enhancing applications by integrating new features as necessary.</li>
+                        <li>Soliciting requirements from project managers and devising comprehensive development architectures, including schema design, API development, and UI creation.</li>
+                        <li>Collaborating with cross-functional teams to define Proof of Concept requirements based on real-time scenarios and use cases.</li>
+                    </ul>
+                    <button class="btn-primary mt-4 generate-summary-btn text-sm sm:text-base" data-project-title="In-house applications (Liberty Mutual)">✨ Generate Summary</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Religare Online</h3>
+                    <p class="text-gray-400 mb-3 text-sm sm:text-base">Duration: Aug'21-Sep'22</p>
+                    <p class="text-gray-300 mb-4 project-description text-sm sm:text-base">
+                        A web application developed on Angular 4, tailored for stock market operations in conjunction with the Religare online portal. This platform
+                        enables clients to invest in both equity and mutual funds seamlessly. Designed to empower users in managing their funds and financial portfolios
+                        effectively, the application serves as a comprehensive tool for investment management.
+                    </p>
+                    <p class="mb-4"><a href="https://www.religareonline.com" target="_blank" class="project-link text-sm sm:text-base">Visit Website</a></p>
+                    <h4 class="text-lg sm:text-xl font-medium text-indigo-300 mb-2">Responsibilities:</h4>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm sm:text-base">
+                        <li>Deployed web-socket technology to enhance the reliability and speed of real-time feeds.</li>
+                        <li>Demonstrated excellence in comprehensively gathering and understanding the requirements of clients and other stakeholders.</li>
+                    </ul>
+                    <button class="btn-primary mt-4 generate-summary-btn text-sm sm:text-base" data-project-title="Religare Online">✨ Generate Summary</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Vehicle Tracking System</h3>
+                    <p class="text-gray-400 mb-3 text-sm sm:text-base">Duration: February 2019-Present</p>
+                    <p class="text-gray-300 mb-4 project-description text-sm sm:text-base">
+                        A web application built on Angular 4, the GPS Tracker Information Control Application serves as a comprehensive solution for vehicle
+                        monitoring. Integrated with real GPS trackers, it provides extensive insights into vehicle data. Utilizing cutting-edge technologies such as sockets, maps,
+                        and Node.js in its backend, this application delivers real-time updates on various vehicle parameters including live tracking, ignition, GPS, power, and
+                        AC information. Furthermore, it incorporates graph functionality for data visualization and analysis. Additionally, the application offers features such as
+                        geofencing, live routing, and various other functionalities to enhance vehicle tracking and management.
+                    </p>
+                    <p class="mb-4"><a href="https://www.oneqlik.in/telematics" target="_blank" class="project-link text-sm sm:text-base">Visit Website</a></p>
+                    <h4 class="text-lg sm:text-xl font-medium text-indigo-300 mb-2">Responsibilities:</h4>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm sm:text-base">
+                        <li>Took initiative in handling assigned tasks and orchestrated the collaborative work efforts effectively.</li>
+                        <li>Offered technical guidance and contributed to resolving programming challenges.</li>
+                        <li>Spearheaded the analysis, design, development, and testing phases of software projects, employing industry best practices of Software Engineering throughout each stage of the development process.</li>
+                    </ul>
+                    <button class="btn-primary mt-4 generate-summary-btn text-sm sm:text-base" data-project-title="Vehicle Tracking System">✨ Generate Summary</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Oneqlik Mobile Application</h3>
+                    <p class="text-gray-400 mb-3 text-sm sm:text-base">Duration: February 2019-August 2019</p>
+                    <p class="text-gray-300 mb-4 project-description text-sm sm:text-base">
+                        A Hybrid mobile application leveraging Ionic3 framework, the GPS Tracker Information Control Application stands as an advanced solution
+                        for vehicle monitoring. Integrated with real GPS trackers, the app offers comprehensive insights into vehicle data. Powered by cutting-edge technologies
+                        including sockets, maps, and Node.js backend, it delivers real-time updates on vehicle status including live tracking, ignition, GPS, power, and AC
+                        information. Additionally, the application incorporates graphical representations for data analysis and visualization. Furthermore, it enables geofencing
+                        and live routing functionalities, alongside a multitude of other features enhancing vehicle tracking and management.
+                    </p>
+                    <p class="mb-4"><a href="https://play.google.com/store/apps/details?id=com.C" target="_blank" class="project-link text-sm sm:text-base">View on Playstore</a></p>
+                    <button class="btn-primary mt-4 generate-summary-btn text-sm sm:text-base" data-project-title="Oneqlik Mobile Application">✨ Generate Summary</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">Bike rental Application (Client: Zogorides)</h3>
+                    <p class="text-gray-400 mb-3 text-sm sm:text-base">Duration: January 2018 - December 2018</p>
+                    <p class="text-gray-300 mb-4 project-description text-sm sm:text-base">
+                        Crafted and led the development of Zogorides, a cutting-edge mobile application designed to revolutionize urban transportation. This
+                        innovative platform offers affordable bike rentals tailored for city commuters, providing a cost-effective solution for fulfilling daily tasks and travel
+                        needs within urban environments.
+                    </p>
+                    <p class="mb-4"><a href="https://play.google.com/store/apps/details?id=com.zogoride.ionic" target="_blank" class="project-link text-sm sm:text-base">View on Play Store</a></p>
+                    <h4 class="text-lg sm:text-xl font-medium text-indigo-300 mb-2">Responsibilities:</h4>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm sm:text-base">
+                        <li>Oversaw all aspects of the project life cycle, including scoping, development, integration, deployment, testing, maintenance, and production support.</li>
+                        <li>Facilitated seamless progress of project work by engaging with team members, ensuring strict adherence to quality standards throughout the implementation process.</li>
+                    </ul>
+                    <button class="btn-primary mt-4 generate-summary-btn text-sm sm:text-base" data-project-title="Bike rental Application (Zogorides)">✨ Generate Summary</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-2">OLAM Project (Client: Opentext)</h3>
+                    <p class="text-gray-400 mb-3 text-sm sm:text-base">Duration: December 2020- Present</p>
+                    <p class="text-gray-300 mb-4 project-description text-sm sm:text-base">
+                        Spearheaded the development of cutting-edge features for the application, ensuring superior performance, compatibility, and responsiveness.
+                        Led the end-to-end delivery of projects, overseeing all stages from initiation to monitoring and control. This included comprehensive tasks such as
+                        planning, scheduling, change control, devising risk responses, and implementing contingency plans.
+                    </p>
+                    <button class="btn-primary mt-4 generate-summary-btn text-sm sm:text-base" data-project-title="OLAM Project (Opentext)">✨ Generate Summary</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-6 text-center animate-fade-in">
+            <h2 class="section-heading mx-auto">Get in Touch</h2>
+            <p class="text-base sm:text-xl text-gray-300 mb-8">I'm always open to new opportunities and collaborations.</p>
+            <div class="flex flex-col items-center space-y-4">
+                <p class="text-base sm:text-2xl text-white font-semibold">Email: <a href="mailto:abiece@outlook.com" class="project-link">abiece@outlook.com</a></p>
+                <p class="text-base sm:text-2xl text-white font-semibold">LinkedIn: <a href="https://www.linkedin.com/in/abiece32/" target="_blank" class="project-link">linkedin.com/in/abiece32/</a></p>
+                <p class="text-base sm:text-2xl text-white font-semibold">Phone: +91 8210834653</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 py-8 text-center text-gray-500">
+        <div class="container mx-auto px-6">
+            <p class="text-sm sm:text-base">&copy; 2025 Abinash Kumar. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal for Generated Summary -->
+    <div id="summaryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 id="modalTitle" class="text-xl sm:text-2xl font-semibold text-indigo-400 mb-4"></h3>
+            <div id="modalBody" class="text-gray-300 text-sm sm:text-lg">
+                <div class="loading-spinner" id="loadingSpinner"></div>
+                <p id="summaryText"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Smooth Scrolling, Scroll-Reveal Animations, Theme Toggle, and Gemini API Integration -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    if (mobileMenu.classList.contains('active')) {
+                        mobileMenu.classList.remove('active');
+                    }
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Scroll-reveal animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate-fade-in').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Theme Toggle Logic
+            const themeToggleDesktop = document.getElementById('themeToggleDesktop');
+            const moonIconDesktop = document.getElementById('moonIconDesktop');
+            const sunIconDesktop = document.getElementById('sunIconDesktop');
+
+            const themeToggleMobile = document.getElementById('themeToggleMobile');
+            const moonIconMobile = document.getElementById('moonIconMobile');
+            const sunIconMobile = document.getElementById('sunIconMobile');
+
+            const body = document.body;
+
+            // Function to set the theme
+            const setTheme = (theme) => {
+                if (theme === 'light') {
+                    body.classList.add('light-theme');
+                    moonIconDesktop.classList.add('hidden');
+                    sunIconDesktop.classList.remove('hidden');
+                    moonIconMobile.classList.add('hidden');
+                    sunIconMobile.classList.remove('hidden');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.remove('light-theme');
+                    moonIconDesktop.classList.remove('hidden');
+                    sunIconDesktop.classList.add('hidden');
+                    moonIconMobile.classList.remove('hidden');
+                    sunIconMobile.classList.add('hidden');
+                    localStorage.setItem('theme', 'dark');
+                }
+            };
+
+            // Initialize theme on page load
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark if no preference
+            setTheme(savedTheme);
+
+            // Toggle theme on button click (desktop)
+            themeToggleDesktop.addEventListener('click', () => {
+                const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+
+            // Toggle theme on button click (mobile)
+            themeToggleMobile.addEventListener('click', () => {
+                const currentTheme = body.classList.contains('light-theme') ? 'light' : 'dark';
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+
+
+            // Gemini API Integration for Project Summaries
+            const summaryModal = document.getElementById('summaryModal');
+            const closeButton = document.querySelector('.close-button');
+            const modalTitle = document.getElementById('modalTitle');
+            const summaryText = document.getElementById('summaryText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Function to open the modal
+            function openModal(title, content) {
+                modalTitle.textContent = title;
+                summaryText.textContent = content;
+                summaryModal.style.display = 'flex'; // Use flex to center
+            }
+
+            // Function to close the modal
+            closeButton.onclick = function() {
+                summaryModal.style.display = 'none';
+                summaryText.textContent = ''; // Clear content on close
+                loadingSpinner.style.display = 'none'; // Hide spinner
+            }
+
+            // Close modal when clicking outside of it
+            window.onclick = function(event) {
+                if (event.target == summaryModal) {
+                    summaryModal.style.display = 'none';
+                    summaryText.textContent = ''; // Clear content on close
+                    loadingSpinner.style.display = 'none'; // Hide spinner
+                }
+            }
+
+            // Event listener for all "Generate Summary" buttons
+            document.querySelectorAll('.generate-summary-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const projectCard = this.closest('.card');
+                    const projectDescription = projectCard.querySelector('.project-description').textContent.trim();
+                    const projectTitle = this.dataset.projectTitle;
+
+                    openModal(`Summary for: ${projectTitle}`, ''); // Open modal with title, clear content
+                    loadingSpinner.style.display = 'block'; // Show loading spinner
+                    summaryText.style.display = 'none'; // Hide summary text while loading
+
+                    try {
+                        let chatHistory = [];
+                        const prompt = `Summarize the following project description concisely in 2-3 sentences, focusing on the project's purpose, technologies used, and key outcomes:\n\n${projectDescription}`;
+                        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // Canvas will automatically provide the API key at runtime
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const generatedText = result.candidates[0].content.parts[0].text;
+                            summaryText.textContent = generatedText;
+                        } else {
+                            summaryText.textContent = 'Could not generate summary. Please try again.';
+                            console.error('Gemini API response structure unexpected:', result);
+                        }
+                    } catch (error) {
+                        console.error('Error calling Gemini API:', error);
+                        summaryText.textContent = 'Error generating summary. Please check your network connection or try again later.';
+                    } finally {
+                        loadingSpinner.style.display = 'none'; // Hide loading spinner
+                        summaryText.style.display = 'block'; // Show summary text
+                    }
+                });
+            });
+
+            // Hamburger menu toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+
+            // Close mobile menu when a link is clicked inside it
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

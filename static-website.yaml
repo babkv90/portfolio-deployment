@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  CloudFormation template to deploy a static website (single HTML file)
+  using Amazon S3 and output its URL.
+
+Resources:
+  # S3 Bucket for Static Website Hosting
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "digital-resume-${AWS::AccountId}-${AWS::Region}" # Unique bucket name
+      AccessControl: PublicRead # Required for public access
+      WebsiteConfiguration:
+        IndexDocument: index.html # Default HTML file
+        ErrorDocument: error.html # Optional: A custom error page
+      Tags:
+        - Key: Project
+          Value: SimpleHtmlWebsite
+        - Key: Environment
+          Value: Dev
+
+  # Bucket Policy to allow public read access
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: s3:GetObject
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref WebsiteBucket
+                - '/*' # Allow public read access to all objects in the bucket
+
+Outputs:
+  # Output the URL of the S3 static website endpoint
+  WebsiteURL:
+    Description: The URL of the S3 static website endpoint
+    Value: !GetAtt WebsiteBucket.WebsiteURL
+    Export:
+      Name: !Sub "${AWS::StackName}-WebsiteURL"
+
+  # Output the S3 Bucket Name
+  BucketName:
+    Description: The name of the S3 bucket
+    Value: !Ref WebsiteBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-BucketName"
