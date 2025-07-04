@@ -171,8 +171,9 @@
 
         /* Header specific styling for theme transition */
         header {
-            background-image: linear-gradient(to right, var(--bg-header-start), var(--bg-header-end));
-            transition: background-image 0.3s ease;
+            /* background-image: linear-gradient(to right, var(--bg-header-start), var(--bg-header-end)); */
+            background: #E7E8D1;
+            transition: background 0.3s ease;
         }
         header nav a {
             color: var(--text-color); /* Ensure nav links change color */
@@ -233,9 +234,9 @@
 <body class="antialiased leading-relaxed">
 
     <!-- Header and Navigation -->
-    <header class="shadow-lg py-6 sticky top-0 z-50">
+    <header class="shadow-lg py-6 sticky top-0 z-50" style="padding: 1rem 0rem;">
         <nav class="container mx-auto px-6 flex justify-between items-center relative">
-            <a href="#" class="text-3xl font-bold tracking-wider">Abinash Kumar</a>
+            <a href="#" class="text-3xl font-bold tracking-wider"> <img src="finallogo.png" alt="Description of your image" width="100" ></a>
 
             <!-- Hamburger menu button for small screens -->
             <div class="flex items-center sm:hidden">
@@ -292,7 +293,7 @@
     <!-- Hero Section -->
      <!-- style="background-image: url('https://placehold.co/1920x1080/1a202c/e2e8f0?text=Modern+Tech+Background');" -->
     <section id="heroSection" class="relative h-screen flex items-center justify-center bg-cover bg-center" >
-        <div class="absolute inset-0 bg-black opacity-70"></div>
+        <div class="absolute inset-0 opacity-70" style="background: #A7BEAE;"></div>
         <div class="z-10 text-center px-6 animate-fade-in flex flex-col items-center">
             <!-- Developer Image -->
             <img src="https://placehold.co/180x180/6366f1/ffffff/png?text=AK" alt="Abinash Kumar Profile" class="developer-image">
@@ -308,7 +309,7 @@
     </section>
 
     <!-- About Me Section -->
-    <section id="about" class="py-20 bg-gray-900">
+    <section id="about" class="py-20 bg-gray-900" style="background: #B85042;">
         <div class="container mx-auto px-6 max-w-4xl animate-fade-in">
             <h2 class="section-heading">About Me</h2>
             <p class="text-base sm:text-lg leading-relaxed mb-4">
@@ -328,7 +329,7 @@
     </section>
 
     <!-- Areas of Expertise Section -->
-    <section id="expertise" class="py-20 bg-gray-800">
+    <section id="expertise" class="py-20 bg-gray-800" style="background: #A7BEAE;">
         <div class="container mx-auto px-6 animate-fade-in">
             <h2 class="section-heading">Areas of Expertise</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -378,7 +379,7 @@
     </section>
 
     <!-- Technical Skills Section -->
-    <section id="skills" class="py-20 bg-gray-900">
+    <section id="skills" class="py-20 bg-gray-900" style="background: #B85042;">
         <div class="container mx-auto px-6 animate-fade-in">
             <h2 class="section-heading">Technical Skills</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -432,7 +433,7 @@
     </section>
 
     <!-- Executive Career History & Highlights Section -->
-    <section id="experience" class="py-20 bg-gray-800">
+    <section id="experience" class="py-20 bg-gray-800" style="background: #A7BEAE;">
         <div class="container mx-auto px-6 max-w-4xl animate-fade-in">
             <h2 class="section-heading">Executive Career History & Highlights</h2>
             <div class="space-y-8">
@@ -484,7 +485,7 @@
     </section>
 
     <!-- Projects Undertaken Section -->
-    <section id="projects" class="py-20 bg-gray-900">
+    <section id="projects" class="py-20 bg-gray-900"  style="background: #B85042;">
         <div class="container mx-auto px-6 animate-fade-in">
             <h2 class="section-heading">Projects Undertaken</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -590,7 +591,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-gray-800">
+    <section id="contact" class="py-20 bg-gray-800" style="background: #A7BEAE;">
         <div class="container mx-auto px-6 text-center animate-fade-in">
             <h2 class="section-heading mx-auto">Get in Touch</h2>
             <p class="text-base sm:text-xl text-gray-300 mb-8">I'm always open to new opportunities and collaborations.</p>
